@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>諮詢表單</title>
+        <link 
+            rel="stylesheet"
+            href="{{url_for('static',filename='styles.css')}}"
+        />
+
+    </head>
+
+    <body>
+        <h2>諮詢表單</h2>
+
+        <!--諮詢表單顯示flash訊息-->
+        <!--將message變數的可利用範圍限制在with內。-->
+        {% with messages = get_flashed_messages() %}
+        {%if messages%}
+        <ul>
+            {%for message in messages %}
+            <li class="flash">{{message}}</li>
+            {%endfor %}
+
+        </ul>
+        {%endif %}
+        {% endwith %} 
+
+        <!--action 表單提交的目標路徑-->
+        <!--表單提交的http方法-->
+        <!--禁用表單的驗證功能-->
+        <form 
+            action="{{url_for('contact_complete')}}"  
+            method="POST" 
+            novalidate="novalidate"  
+        >
+        
+            <table>
+                <tr>
+                    <td>使用者名稱</td>
+                    <td>
+                        <input 
+                            type="text"
+                            name="username"
+                            value="{{username}}"
+                            placeholder="使用者名稱"
+                        />
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>郵件地址</td>
+                    <td>
+                        <input
+                            type = "text"
+                            name = "email"
+                            value = "{{email}}"
+                            placeholder = "郵件地址"
+                        />
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>諮詢內容</td>
+                    <td>
+                        <textarea name = "description" placeholder = "諮詢內容">
+                            {{description}}
+                        </textarea>
+                    </td>
+                </tr>
+            </table>
+            <input type = "submit" value ="諮詢"/>
+        <form/>
+
+    </body>
+
+</html>
