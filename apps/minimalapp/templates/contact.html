@@ -5,7 +5,7 @@
         <title>諮詢表單</title>
         <link 
             rel="stylesheet"
-            href="{{url_for('static',filename='styles.css')}}"
+            href="{{url_for('static',filename='style.css')}}"
         />
 
     </head>
@@ -63,9 +63,13 @@
                 <tr>
                     <td>諮詢內容</td>
                     <td>
-                        <textarea name = "description" placeholder = "諮詢內容">
-                            {{description}}
-                        </textarea>
+                        
+                        <textarea name="description" placeholder="諮詢內容" onclick="clearTextarea(this)" onfocus="clearTextarea(this)"></textarea>
+                        <script>
+                            function clearTextarea(textarea) {
+                            textarea.value = '';
+                            }
+                        </script>
                     </td>
                 </tr>
             </table>
