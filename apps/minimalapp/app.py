@@ -2,29 +2,41 @@ import logging
 import os
 
 from email_validator import EmailNotValidError, validate_email
-from flask import (
-    Flask,
-    current_app,
-    flash,
-    g,
-    make_response,
-    redirect,
-    render_template,
-    request,
-    session,
-    url_for,
-)
+
+# from flask import response  # 刪除 cookie 值;
+from flask import make_response  # 刪除 cookie 值; 設定 coolie 值;
+from flask import render_template  # 刪除 cookie 值; 設定 coolie 值;
+from flask import request  # 設定 cookie 值;
+from flask import Flask, current_app, flash, redirect, session, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_mail import Mail, Message
 
-# from flask import Flask
+# veriable
 
+debug_tool_on = True
+
+# 取得 cookie 值
+# username = request.cookies.get("username")
+
+
+# app
+# def create_app():
+#     app = Flask(__name__)
+#     from apps.crud import views as crud_views
+
+#     app.register_blueprint(crud_views.crud, url_prefix="/crud")
+#     return app
 app = Flask(__name__)
+
+
 app.config["SECRET_KEY"] = "2AZSMss3p5QPbcY2hBsJ"
 
 app.logger.setLevel(logging.DEBUG)
-app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
-toolbar = DebugToolbarExtension(app)
+
+# debug 工具
+if debug_tool_on:
+    app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
+    toolbar = DebugToolbarExtension(app)
 
 app.logger.critical("fatal error")
 app.logger.error("error")
@@ -58,7 +70,21 @@ def show_name(name):
 
 @app.route("/contact")
 def contact():
-    return render_template("contact.html")
+    # return render_template("contact.html")
+
+    # 從 contact.html 取得 Response 物件(response)
+    # make_response(render_template("contact.html"))這段程式碼本身並不能直接取得在 contact.html 中輸入的變數。
+    # make_response(render_template("contact.html")) 的作用是將渲染後的 contact.html 模板轉換為一個 Response 物件，並返回給客戶端作為 HTTP 回應的一部分。
+    response = make_response(render_template("contact.html"))
+
+    # 設定 cookie
+    response.set_cookie("flaskbook key", "flaskbook value")
+
+    # 設定 session
+    session["username"] = "young"
+
+    # 回應 Response 物件
+    return response
 
 
 @app.route("/contact/complete", methods=["GET", "POST"])
@@ -101,13 +127,13 @@ def contact_complete():
             username=username,
             description=description,
         )
-
         # 完成表單處理後，伺服器會使用重定向將使用者重定向到另一個頁面（通常是GET請求的目標頁面），而不是直接返回回應。
         return redirect(url_for("contact_complete"))
     # 最終，客戶端收到重定向的回應後，會發起一個GET請求獲取重定向目標頁面的內容。
     return render_template("contact_complete.html")
 
 
+# \ **kwargs表示接受任意数量的关键字参数。在函数调用时，您可以传递额外的关键字参数，它们将被打包成一个字典并传递给函数。
 def send_email(to, subject, template, **kwargs):
     msg = Message(subject, recipients=[to])
     msg.body = render_template(template + ".txt", **kwargs)
