@@ -86,7 +86,8 @@ def contact():
     # 回應 Response 物件
     return response
 
-
+# 
+# 當用戶提交表單後，如果刷新頁面，可能會導致表單數據再次提交。這是因為瀏覽器在提交表單後會保留最後提交的表單數據，並在用戶刷新頁面時重新發送相同的 POST 請求。
 @app.route("/contact/complete", methods=["GET", "POST"])
 def contact_complete():
     # 當使用者提交表單時，使用POST方法將表單數據發送給伺服器。
